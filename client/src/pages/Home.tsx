@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, Grid3x3, List, TrendingUp } from 'lucide-react';
 import ContentCard from '@/components/ContentCard';
 import ContentDetailDialog from '@/components/ContentDetailDialog';
+import AIAssistant from '@/components/AIAssistant';
 
 interface Content {
   id: string;
@@ -341,6 +342,9 @@ export default function Home() {
           onUpdate={handleUpdate}
         />
       )}
+
+      {/* AI Assistant */}
+      <AIAssistant contents={contents} />
     </div>
   );
 }
