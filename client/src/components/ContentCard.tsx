@@ -240,7 +240,7 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
               size="sm"
               variant={content.watched ? 'default' : 'outline'}
               onClick={handleWatchedToggle}
-              className="h-6 text-xs px-2 flex-1"
+              className="h-6 text-xs px-2 flex-1" style={{color: '#ffffff'}}
             >
               <Check className="w-2.5 h-2.5 mr-1" />
               {content.watched ? 'Visto' : 'Marcar'}
