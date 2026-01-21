@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, Grid3x3, List, TrendingUp } from 'lucide-react';
 import ContentCard from '@/components/ContentCard';
 import ContentDetailDialog from '@/components/ContentDetailDialog';
+import AIAssistant from '@/components/AIAssistant';
 
 interface Content {
   id: string;
@@ -130,7 +131,7 @@ export default function Home() {
             </Button>
             <Button 
               className="bg-yellow-600 hover:bg-yellow-700 text-white border border-yellow-500/50"
-              variant="outline"
+              variant="outline" style={{backgroundColor: '#ff0000'}}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               Estadísticas
@@ -202,7 +203,7 @@ export default function Home() {
                   variant={viewMode === 'list' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className="flex-1"
+                  className="flex-1" style={{color: '#ffffff'}}
                 >
                   <List className="w-4 h-4" />
                 </Button>
@@ -341,6 +342,9 @@ export default function Home() {
           onUpdate={handleUpdate}
         />
       )}
+
+      {/* AI Assistant */}
+      <AIAssistant contents={contents} />
     </div>
   );
 }
