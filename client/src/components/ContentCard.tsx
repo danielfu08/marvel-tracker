@@ -162,7 +162,7 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
     );
   }
 
-  // Grid view - Image on right, content on left
+  // Grid view - Image on left, content on right
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -171,33 +171,49 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
       layout
     >
       <Card className={`overflow-hidden bg-zinc-900/50 border-2 border-dashed border-red-900/40 hover:border-red-700/60 transition-all duration-300 cursor-pointer flex flex-row h-full ${content.watched ? 'ring-2 ring-emerald-500/30' : ''}`}>
-        {/* Content - Left Side */}
-        <div className="p-4 flex flex-col justify-between flex-1 min-w-0">
+        {/* Poster - Left Side */}
+        <div className="relative w-56 h-72 flex-shrink-0 overflow-hidden bg-zinc-800">
+          <img
+            src={content.image_url}
+            alt={content.title}
+            className={`w-full h-full object-cover ${content.watched ? 'opacity-60' : ''}`}
+          />
+          {content.watched && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+              <div className="bg-emerald-500 rounded-full p-3">
+                <Check className="w-8 h-8 text-white" />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Content - Right Side */}
+        <div className="p-5 flex flex-col justify-between flex-1 min-w-0">
           {/* Header with Saga Badge */}
           <div>
-            <Badge className={`${sagaColors[content.saga] || 'bg-gray-600'} text-white text-[10px] px-1.5 mb-2 inline-block`}>
+            <Badge className={`${sagaColors[content.saga] || 'bg-gray-600'} text-white text-[10px] px-2 mb-2 inline-block`}>
               {content.saga}
             </Badge>
             
-            <h3 className={`font-bold text-white text-sm leading-tight mb-2 line-clamp-2 ${content.watched ? 'line-through opacity-60' : ''}`}>
+            <h3 className={`font-bold text-white text-base leading-tight mb-3 line-clamp-2 ${content.watched ? 'line-through opacity-60' : ''}`}>
               {content.title}
             </h3>
 
-            <p className="text-xs text-zinc-400 mb-2 line-clamp-2">
+            <p className="text-sm text-zinc-400 mb-3 line-clamp-3">
               {content.synopsis}
             </p>
 
-            <div className="flex items-center gap-1 mb-2 flex-wrap">
-              <Badge variant="outline" className="text-[9px] border-zinc-700 text-zinc-400 px-1 py-0">
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              <Badge variant="outline" className="text-[9px] border-zinc-700 text-zinc-400 px-2 py-1">
                 {content.content_type}
               </Badge>
-              <Badge variant="outline" className="text-[9px] border-zinc-700 text-zinc-400 px-1 py-0">
+              <Badge variant="outline" className="text-[9px] border-zinc-700 text-zinc-400 px-2 py-1">
                 {content.universe}
               </Badge>
             </div>
 
             {/* Rating */}
-            <div className="flex items-center gap-0.5 mb-3">
+            <div className="flex items-center gap-1 mb-4">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
@@ -207,7 +223,7 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
                   className="transition-transform hover:scale-110"
                 >
                   <Star
-                    className={`w-3 h-3 ${
+                    className={`w-4 h-4 ${
                       star <= (hoverRating || rating)
                         ? 'fill-yellow-400 text-yellow-400'
                         : 'text-zinc-600'
@@ -216,27 +232,27 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
                 </button>
               ))}
               {rating > 0 && (
-                <span className="text-xs text-zinc-500 ml-1">{rating}/5</span>
+                <span className="text-sm text-zinc-500 ml-2">{rating}/5</span>
               )}
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-1 flex-wrap text-xs" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-2 flex-wrap text-xs" onClick={(e) => e.stopPropagation()}>
             <Button
               size="sm"
               variant={content.watched ? 'default' : 'outline'}
               onClick={handleWatchedToggle}
-              className="h-6 text-xs px-2" style={{color: '#ffffff'}}
+              className="h-7 text-xs px-3" style={{color: '#ffffff'}}
             >
-              <Check className="w-2.5 h-2.5 mr-1" />
+              <Check className="w-3 h-3 mr-1" />
               {content.watched ? 'Visto' : 'Marcar'}
             </Button>
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-6 text-xs px-2 bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
-                  <Calendar className="w-2.5 h-2.5 mr-1" />
+                <Button variant="outline" size="sm" className="h-7 text-xs px-3 bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
+                  <Calendar className="w-3 h-3 mr-1" />
                   Fecha
                 </Button>
               </PopoverTrigger>
@@ -252,8 +268,8 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
 
             <Dialog open={isEditing} onOpenChange={setIsEditing}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="h-6 text-xs px-2 bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
-                  <MessageSquare className="w-2.5 h-2.5 mr-1" />
+                <Button variant="outline" size="sm" className="h-7 text-xs px-3 bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
+                  <MessageSquare className="w-3 h-3 mr-1" />
                   Comentario
                 </Button>
               </DialogTrigger>
@@ -278,29 +294,13 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
               <Button
                 size="sm"
                 onClick={handleCalendarClick}
-                className="h-6 text-xs px-2 bg-blue-600 hover:bg-blue-700 text-white"
+                className="h-7 text-xs px-3 bg-blue-600 hover:bg-blue-700 text-white"
               >
-                <CalendarX2 className="w-2.5 h-2.5 mr-1" />
+                <CalendarX2 className="w-3 h-3 mr-1" />
                 Calendar
               </Button>
             )}
           </div>
-        </div>
-
-        {/* Poster - Right Side */}
-        <div className="relative w-40 h-56 flex-shrink-0 overflow-hidden bg-zinc-800">
-          <img
-            src={content.image_url}
-            alt={content.title}
-            className={`w-full h-full object-cover ${content.watched ? 'opacity-60' : ''}`}
-          />
-          {content.watched && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-              <div className="bg-emerald-500 rounded-full p-2">
-                <Check className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          )}
         </div>
       </Card>
     </motion.div>
