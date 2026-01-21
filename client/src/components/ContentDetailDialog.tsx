@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Check, X, Calendar, MessageSquare, ExternalLink } from 'lucide-react';
+import { Star, Check, X, Calendar, MessageSquare, CalendarX2 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
@@ -22,7 +22,7 @@ interface Content {
 }
 
 interface ContentDetailDialogProps {
-  content: Content | null;
+  content: Content;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onUpdate: (id: string, updates: Partial<Content>) => void;
@@ -44,20 +44,19 @@ export default function ContentDetailDialog({
   onOpenChange,
   onUpdate
 }: ContentDetailDialogProps) {
-  const [rating, setRating] = useState(content?.rating || 0);
-  const [comment, setComment] = useState(content?.comment || '');
-  const [isEditingComment, setIsEditingComment] = useState(false);
+  const [rating, setRating] = useState(content.rating || 0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [comment, setComment] = useState(content.comment || '');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    content?.scheduled_date ? new Date(content.scheduled_date) : undefined
+    content.scheduled_date ? new Date(content.scheduled_date) : undefined
   );
-
-  if (!content) return null;
+  const [isEditingComment, setIsEditingComment] = useState(false);
 
   const handleWatchedToggle = () => {
     onUpdate(content.id, { watched: !content.watched });
   };
 
-  const handleRatingChange = (value: number) => {
+  const handleRatingClick = (value: number) => {
     setRating(value);
     onUpdate(content.id, { rating: value });
   };
@@ -101,59 +100,70 @@ export default function ContentDetailDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-zinc-900 border-zinc-800 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-white text-2xl">{content.title}</DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-6">
-          {/* Poster and Basic Info */}
-          <div className="flex gap-6">
-            <img
-              src={content.image_url}
-              alt={content.title}
-              className={`w-32 h-48 object-cover rounded-lg flex-shrink-0 ${content.watched ? 'opacity-60' : ''}`}
-            />
-            <div className="flex-1 space-y-3">
-              <div className="flex flex-wrap gap-2">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
                 <Badge className={`${sagaColors[content.saga] || 'bg-gray-600'} text-white`}>
                   {content.saga}
                 </Badge>
-                <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                <Badge variant="outline" className="border-zinc-700 text-zinc-400 text-xs">
                   {content.content_type}
                 </Badge>
-                <Badge variant="outline" className="border-zinc-700 text-zinc-400">
+                <Badge variant="outline" className="border-zinc-700 text-zinc-400 text-xs">
                   {content.universe}
                 </Badge>
               </div>
-
-              <div>
-                <p className="text-sm text-zinc-400 mb-2">Sinopsis</p>
-                <p className="text-sm text-zinc-300">{content.synopsis}</p>
-              </div>
-
-              {content.comment && (
-                <div>
-                  <p className="text-sm text-zinc-400 mb-2">Tu comentario</p>
-                  <p className="text-sm text-zinc-300 italic">{content.comment}</p>
-                </div>
-              )}
+              <DialogTitle className="text-white text-2xl">{content.title}</DialogTitle>
             </div>
+            <button
+              onClick={() => onOpenChange(false)}
+              className="text-zinc-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {/* Image */}
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-zinc-800">
+            <img
+              src={content.image_url}
+              alt={content.title}
+              className={`w-full h-full object-cover ${content.watched ? 'opacity-60' : ''}`}
+            />
+            {content.watched && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                <div className="bg-emerald-500 rounded-full p-3">
+                  <Check className="w-8 h-8 text-white" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Synopsis */}
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-400 mb-2">Sinopsis</h3>
+            <p className="text-sm text-zinc-300 leading-relaxed">{content.synopsis}</p>
           </div>
 
           {/* Rating */}
           <div>
-            <p className="text-sm text-zinc-400 mb-3">Calificación</p>
+            <h3 className="text-sm font-semibold text-zinc-400 mb-2">Calificación</h3>
             <div className="flex items-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
-                  onClick={() => handleRatingChange(star)}
+                  onClick={() => handleRatingClick(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
                   className="transition-transform hover:scale-110"
                 >
                   <Star
-                    className={`w-6 h-6 ${
-                      star <= rating
+                    className={`w-5 h-5 ${
+                      star <= (hoverRating || rating)
                         ? 'fill-yellow-400 text-yellow-400'
                         : 'text-zinc-600'
                     }`}
@@ -166,80 +176,86 @@ export default function ContentDetailDialog({
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant={content.watched ? 'default' : 'outline'}
-                onClick={handleWatchedToggle}
-                className="w-full"
-              >
-                <Check className="w-4 h-4 mr-2" />
-                {content.watched ? 'Marcado como visto' : 'Marcar como visto'}
-              </Button>
-
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Seleccionar fecha
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-800" align="start">
-                  <CalendarComponent
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={handleDateChange}
-                    className="bg-zinc-900"
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {selectedDate && (
-              <Button
-                onClick={handleCalendarClick}
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Añadir a Google Calendar
-              </Button>
-            )}
-
-            <Button
-              variant="outline"
-              onClick={() => setIsEditingComment(!isEditingComment)}
-              className="w-full"
-            >
-              <MessageSquare className="w-4 h-4 mr-2" />
-              {isEditingComment ? 'Cancelar comentario' : 'Añadir comentario'}
-            </Button>
-
-            {isEditingComment && (
+          {/* Comment */}
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-400 mb-2">Comentario</h3>
+            {isEditingComment ? (
               <div className="space-y-2">
                 <Textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Escribe tu comentario..."
-                  className="bg-zinc-800 border-zinc-700 text-white"
-                  rows={4}
+                  className="bg-zinc-800 border-zinc-700 text-white text-sm"
+                  rows={3}
                 />
-                <Button onClick={handleCommentSave} className="w-full">
-                  Guardar comentario
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleCommentSave}
+                    size="sm"
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Guardar
+                  </Button>
+                  <Button
+                    onClick={() => setIsEditingComment(false)}
+                    size="sm"
+                    variant="outline"
+                    className="border-zinc-700"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div
+                onClick={() => setIsEditingComment(true)}
+                className="p-3 bg-zinc-800 rounded-lg border border-zinc-700 cursor-pointer hover:border-zinc-600 transition-colors min-h-12"
+              >
+                <p className="text-sm text-zinc-300">
+                  {comment || <span className="text-zinc-500 italic">Haz clic para añadir un comentario...</span>}
+                </p>
               </div>
             )}
           </div>
 
-          {/* Close Button */}
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="w-full"
-          >
-            <X className="w-4 h-4 mr-2" />
-            Cerrar
-          </Button>
+          {/* Actions */}
+          <div className="flex flex-wrap gap-2 pt-4 border-t border-zinc-800">
+            <Button
+              onClick={handleWatchedToggle}
+              variant={content.watched ? 'default' : 'outline'}
+              className={content.watched ? 'bg-emerald-600 hover:bg-emerald-700' : 'border-zinc-700'}
+            >
+              <Check className="w-4 h-4 mr-2" />
+              {content.watched ? 'Visto' : 'Marcar como visto'}
+            </Button>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Seleccionar fecha
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-800" align="start">
+                <CalendarComponent
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleDateChange}
+                  className="bg-zinc-900"
+                />
+              </PopoverContent>
+            </Popover>
+
+            {selectedDate && (
+              <Button
+                onClick={handleCalendarClick}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <CalendarX2 className="w-4 h-4 mr-2" />
+                Añadir a Google Calendar
+              </Button>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

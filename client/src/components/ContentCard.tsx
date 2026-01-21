@@ -106,7 +106,7 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <Card className={`overflow-hidden bg-gradient-to-r from-zinc-900 to-zinc-950 border-zinc-800 hover:border-zinc-700 transition-all duration-300 ${content.watched ? 'ring-2 ring-emerald-500/30' : ''}`}>
+        <Card className={`overflow-hidden bg-zinc-900/50 border-2 border-dashed border-red-900/40 hover:border-red-700/60 transition-all duration-300 ${content.watched ? 'ring-2 ring-emerald-500/30' : ''}`}>
           <div className="flex items-center gap-4 p-4">
             <img
               src={content.image_url}
@@ -169,135 +169,134 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
       transition={{ duration: 0.3 }}
       layout
     >
-      <Card className={`overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-950 border-zinc-800 hover:border-zinc-700 transition-all duration-300 cursor-pointer ${content.watched ? 'ring-2 ring-emerald-500/30' : ''}`}>
-        <div className="flex flex-col h-full">
-          {/* Poster */}
-          <div className="relative w-full aspect-video overflow-hidden bg-zinc-800">
-            <img
-              src={content.image_url}
-              alt={content.title}
-              className={`w-full h-full object-cover ${content.watched ? 'opacity-60' : ''}`}
-            />
-            {content.watched && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                <div className="bg-emerald-500 rounded-full p-2">
-                  <Check className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            )}
-            <Badge className={`absolute top-2 left-2 ${sagaColors[content.saga] || 'bg-gray-600'} text-white text-[10px] px-1.5`}>
-              {content.saga}
-            </Badge>
-          </div>
-
-          {/* Content */}
-          <div className="p-4 flex flex-col justify-between flex-1">
-            <div>
-              <h3 className={`font-bold text-white text-sm leading-tight mb-2 line-clamp-2 ${content.watched ? 'line-through opacity-60' : ''}`}>
-                {content.title}
-              </h3>
-
-              <p className="text-xs text-zinc-400 mb-3 line-clamp-2">
-                {content.synopsis}
-              </p>
-
-              <div className="flex items-center gap-2 mb-3 flex-wrap">
-                <Badge variant="outline" className="text-[10px] border-zinc-700 text-zinc-400">
-                  {content.content_type}
-                </Badge>
-                <Badge variant="outline" className="text-[10px] border-zinc-700 text-zinc-400">
-                  {content.universe}
-                </Badge>
-              </div>
-
-              {/* Rating */}
-              <div className="flex items-center gap-1 mb-3">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={(e) => handleRatingClick(star, e)}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    className="transition-transform hover:scale-110"
-                  >
-                    <Star
-                      className={`w-4 h-4 ${
-                        star <= (hoverRating || rating)
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-zinc-600'
-                      }`}
-                    />
-                  </button>
-                ))}
-                {rating > 0 && (
-                  <span className="text-xs text-zinc-500 ml-1">{rating}/5</span>
-                )}
+      <Card className={`overflow-hidden bg-zinc-900/50 border-2 border-dashed border-red-900/40 hover:border-red-700/60 transition-all duration-300 cursor-pointer flex flex-col h-full ${content.watched ? 'ring-2 ring-emerald-500/30' : ''}`}>
+        {/* Poster */}
+        <div className="relative w-full aspect-video overflow-hidden bg-zinc-800">
+          <img
+            src={content.image_url}
+            alt={content.title}
+            className={`w-full h-full object-cover ${content.watched ? 'opacity-60' : ''}`}
+          />
+          {content.watched && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+              <div className="bg-emerald-500 rounded-full p-2">
+                <Check className="w-6 h-6 text-white" />
               </div>
             </div>
+          )}
+          <Badge className={`absolute top-2 left-2 ${sagaColors[content.saga] || 'bg-gray-600'} text-white text-[10px] px-1.5`}>
+            {content.saga}
+          </Badge>
+        </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2 flex-wrap" onClick={(e) => e.stopPropagation()}>
-              <Button
-                size="sm"
-                variant={content.watched ? 'default' : 'outline'}
-                onClick={handleWatchedToggle}
-                className="h-7 text-xs flex-1"
-              >
-                <Check className="w-3 h-3 mr-1" />
-                {content.watched ? 'Visto' : 'Marcar visto'}
-              </Button>
+        {/* Content */}
+        <div className="p-3 flex flex-col justify-between flex-1">
+          <div>
+            <h3 className={`font-bold text-white text-xs leading-tight mb-2 line-clamp-2 ${content.watched ? 'line-through opacity-60' : ''}`}>
+              {content.title}
+            </h3>
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 text-xs bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
-                    <Calendar className="w-3 h-3 mr-1" />
-                    Fecha
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-800" align="start">
-                  <CalendarComponent
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => handleDateChange(date)}
-                    className="bg-zinc-900"
-                  />
-                </PopoverContent>
-              </Popover>
+            <p className="text-xs text-zinc-400 mb-2 line-clamp-2">
+              {content.synopsis}
+            </p>
 
-              <Dialog open={isEditing} onOpenChange={setIsEditing}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 text-xs bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
-                    <MessageSquare className="w-3 h-3 mr-1" />
-                    Comentario
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800">
-                  <DialogHeader>
-                    <DialogTitle className="text-white">Añadir comentario</DialogTitle>
-                  </DialogHeader>
-                  <Textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Escribe tu comentario..."
-                    className="bg-zinc-800 border-zinc-700 text-white"
-                  />
-                  <Button onClick={handleCommentSave} className="w-full">
-                    Guardar
-                  </Button>
-                </DialogContent>
-              </Dialog>
+            <div className="flex items-center gap-1 mb-2 flex-wrap">
+              <Badge variant="outline" className="text-[9px] border-zinc-700 text-zinc-400 px-1 py-0">
+                {content.content_type}
+              </Badge>
+              <Badge variant="outline" className="text-[9px] border-zinc-700 text-zinc-400 px-1 py-0">
+                {content.universe}
+              </Badge>
+            </div>
 
-              {selectedDate && (
-                <Button
-                  size="sm"
-                  onClick={handleCalendarClick}
-                  className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white flex-1"
+            {/* Rating */}
+            <div className="flex items-center gap-0.5 mb-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={(e) => handleRatingClick(star, e)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  className="transition-transform hover:scale-110"
                 >
-                  <CalendarX2 className="w-3 h-3 mr-1" />
-                  Calendario
-                </Button>
+                  <Star
+                    className={`w-3 h-3 ${
+                      star <= (hoverRating || rating)
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-zinc-600'
+                    }`}
+                  />
+                </button>
+              ))}
+              {rating > 0 && (
+                <span className="text-xs text-zinc-500 ml-1">{rating}/5</span>
               )}
             </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-1 flex-wrap text-xs" onClick={(e) => e.stopPropagation()}>
+            <Button
+              size="sm"
+              variant={content.watched ? 'default' : 'outline'}
+              onClick={handleWatchedToggle}
+              className="h-6 text-xs px-2 flex-1"
+            >
+              <Check className="w-2.5 h-2.5 mr-1" />
+              {content.watched ? 'Visto' : 'Marcar'}
+            </Button>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-6 text-xs px-2 bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
+                  <Calendar className="w-2.5 h-2.5 mr-1" />
+                  Fecha
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-800" align="start">
+                <CalendarComponent
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => handleDateChange(date)}
+                  className="bg-zinc-900"
+                />
+              </PopoverContent>
+            </Popover>
+
+            <Dialog open={isEditing} onOpenChange={setIsEditing}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="h-6 text-xs px-2 bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-300">
+                  <MessageSquare className="w-2.5 h-2.5 mr-1" />
+                  Comentario
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-zinc-900 border-zinc-800">
+                <DialogHeader>
+                  <DialogTitle className="text-white">Comentario</DialogTitle>
+                </DialogHeader>
+                <Textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Escribe tu comentario..."
+                  className="bg-zinc-800 border-zinc-700 text-white text-xs"
+                  rows={3}
+                />
+                <Button onClick={handleCommentSave} className="w-full text-xs h-7">
+                  Guardar
+                </Button>
+              </DialogContent>
+            </Dialog>
+
+            {selectedDate && (
+              <Button
+                size="sm"
+                onClick={handleCalendarClick}
+                className="h-6 text-xs px-2 bg-blue-600 hover:bg-blue-700 text-white flex-1"
+              >
+                <CalendarX2 className="w-2.5 h-2.5 mr-1" />
+                Calendar
+              </Button>
+            )}
           </div>
         </div>
       </Card>
