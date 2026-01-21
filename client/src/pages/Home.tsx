@@ -130,7 +130,7 @@ export default function Home() {
             </Button>
             <Button 
               className="bg-yellow-600 hover:bg-yellow-700 text-white border border-yellow-500/50"
-              variant="outline"
+              variant="outline" style={{backgroundColor: '#ff0000'}}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               Estadísticas
@@ -202,7 +202,7 @@ export default function Home() {
                   variant={viewMode === 'list' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className="flex-1"
+                  className="flex-1" style={{color: '#ffffff'}}
                 >
                   <List className="w-4 h-4" />
                 </Button>

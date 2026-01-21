@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, Calendar, MessageSquare, Check, CalendarX2, CalendarCheck } from 'lucide-react';
+import { Star, Calendar, MessageSquare, Check, CalendarX2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -74,29 +74,40 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
     }
   };
 
-  const handleCalendarClick = (e: React.MouseEvent) => {
+  const handleAddToGoogleCalendar = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (selectedDate) {
-      const startDate = new Date(selectedDate);
-      startDate.setHours(20, 0, 0, 0);
-      const endDate = new Date(startDate);
-      endDate.setHours(22, 0, 0, 0);
+    
+    // Use selected date or today's date as default
+    const eventDate = selectedDate || new Date();
+    const startDate = new Date(eventDate);
+    startDate.setHours(20, 0, 0, 0);
+    const endDate = new Date(startDate);
+    endDate.setHours(22, 0, 0, 0);
 
-      const formatDateForGoogle = (date: Date) => {
-        return date.toISOString().replace(/-|:|\.\d\d\d/g, '');
-      };
+    // Format dates for Google Calendar (YYYYMMDDTHHMMSS format)
+    const formatDateForGoogle = (date: Date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+    };
 
-      const details = `Maratón Marvel - ${content.saga}\n${content.content_type}\n\n${comment || ''}`;
-      const params = new URLSearchParams({
-        action: 'TEMPLATE',
-        text: `🎬 ${content.title}`,
-        dates: `${formatDateForGoogle(startDate)}/${formatDateForGoogle(endDate)}`,
-        details: details,
-        location: 'Maratón Marvel'
-      });
+    const details = `Maratón Marvel - ${content.saga}\n${content.content_type}\n\n${comment || 'Ver película/serie del universo Marvel'}`;
+    
+    // Create Google Calendar event URL
+    const eventUrl = new URL('https://calendar.google.com/calendar/render');
+    eventUrl.searchParams.set('action', 'TEMPLATE');
+    eventUrl.searchParams.set('text', `🎬 ${content.title}`);
+    eventUrl.searchParams.set('dates', `${formatDateForGoogle(startDate)}/${formatDateForGoogle(endDate)}`);
+    eventUrl.searchParams.set('details', details);
+    eventUrl.searchParams.set('location', 'Maratón Marvel');
+    eventUrl.searchParams.set('trp', 'true');
 
-      window.open(`https://calendar.google.com/calendar/render?${params.toString()}`, '_blank');
-    }
+    // Open in new window
+    window.open(eventUrl.toString(), '_blank', 'width=800,height=600');
   };
 
   if (viewMode === 'list') {
@@ -290,16 +301,15 @@ export default function ContentCard({ content, onUpdate, viewMode = 'grid' }: Co
               </DialogContent>
             </Dialog>
 
-            {selectedDate && (
-              <Button
-                size="sm"
-                onClick={handleCalendarClick}
-                className="h-7 text-xs px-3 bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <CalendarX2 className="w-3 h-3 mr-1" />
-                Calendar
-              </Button>
-            )}
+            <Button
+              size="sm"
+              onClick={handleAddToGoogleCalendar}
+              className="h-7 text-xs px-3 bg-blue-600 hover:bg-blue-700 text-white"
+              title={selectedDate ? `Agregar al calendario para ${selectedDate.toLocaleDateString()}` : 'Agregar al calendario'}
+            >
+              <CalendarX2 className="w-3 h-3 mr-1" />
+              Calendar
+            </Button>
           </div>
         </div>
       </Card>
