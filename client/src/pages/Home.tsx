@@ -298,7 +298,7 @@ export default function Home() {
           </div>
 
           <div className={viewMode === 'grid' 
-            ? 'grid grid-cols-2 lg:grid-cols-3 gap-4' 
+            ? 'grid grid-cols-1 lg:grid-cols-2 gap-4' 
             : 'flex flex-col gap-3'
           }>
             <AnimatePresence>
