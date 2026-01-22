@@ -177,7 +177,7 @@ export default function AIAssistant({ contents }: AIAssistantProps) {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-full shadow-lg flex items-center justify-center z-40 transition-all duration-300"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-full shadow-lg flex items-center justify-center z-40 transition-all duration-300"
       >
         <Sparkles className="w-6 h-6" />
       </motion.button>
@@ -190,7 +190,7 @@ export default function AIAssistant({ contents }: AIAssistantProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-20 right-3 left-3 sm:left-auto sm:right-6 sm:w-96 h-[70vh] sm:h-[600px] max-h-[80vh] bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 w-96 h-[600px] bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4 flex items-center justify-between">
